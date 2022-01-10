@@ -11,4 +11,6 @@ public interface UserService {
     void save(User user);
 
     Result findUserById(Long id, String token);
+
+    void updateUserInfo(User user);
 }

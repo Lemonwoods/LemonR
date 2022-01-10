@@ -67,4 +67,9 @@ public class UserServiceImpl implements UserService {
 
         return Result.succeed(tranferToUserVo(user));
     }
+
+    @Override
+    public void updateUserInfo(User user) {
+        userMapper.updateById(user);
+    }
 }
