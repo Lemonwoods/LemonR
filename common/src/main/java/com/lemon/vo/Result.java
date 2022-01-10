@@ -11,7 +11,7 @@ public class Result {
     private String msg;
     private Object data;
 
-    public static Result success(Object data){
+    public static Result succeed(Object data){
         return new Result(true, 200, "success", data);
     }
 

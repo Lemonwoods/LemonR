@@ -1,6 +1,6 @@
 package com.lemon.config;
 
-import com.lemon.blog.handler.LoginInterceptor;
+import com.lemon.handler.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
