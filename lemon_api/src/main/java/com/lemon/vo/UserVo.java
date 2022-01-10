@@ -1,9 +1,9 @@
-package com.lemon.dao.pojo;
+package com.lemon.vo;
 
 import lombok.Data;
 
 @Data
-public class User {
+public class UserVo {
     private Long id;
 
     private String account;
@@ -25,16 +25,4 @@ public class User {
     private Integer followCount;
 
     private Long createCount;
-
-    private String password;
-
-    private String salt;
-
-    private Boolean admin;
-
-    private String status;
-
-    private Long last_login;
-
-    private Boolean deleted;
 }
