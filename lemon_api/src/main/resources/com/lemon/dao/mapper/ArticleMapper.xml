@@ -4,7 +4,7 @@
 
 <mapper namespace="com.lemon.dao.mapper.ArticleMapper">
 
-    <select id="listArticle" resultType="com.lemon.dao.pojo.Article">
+    <select id="getArticleList" resultType="com.lemon.dao.pojo.Article">
         select * from le_article
         <where>
             <if test="categoryId != null">

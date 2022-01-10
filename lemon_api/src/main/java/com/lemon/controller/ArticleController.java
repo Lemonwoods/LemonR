@@ -19,6 +19,6 @@ public class ArticleController {
 
     @PostMapping
     public Result getArticleList(@RequestBody PageParamWithCondition pageParamWithCondition){
-        return articleService.getArticleList(pageParamWithCondition);
+        return Result.succeed(articleService.getArticleList(pageParamWithCondition));
     }
 }

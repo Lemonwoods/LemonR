@@ -10,11 +10,13 @@ import com.lemon.service.TagService;
 import com.lemon.vo.ArticleVo;
 import com.lemon.vo.CategoryVo;
 import com.lemon.vo.Result;
+import com.lemon.vo.TagVo;
 import com.lemon.vo.param.PageParamWithCondition;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,10 +40,23 @@ public class ArticleServiceImpl implements ArticleService {
             CategoryVo categoryVo = categoryService.findCategoryVoById(article.getCategoryId());
             articleVo.setCategoryVo(categoryVo);
         }
+
+        if(needTag){
+            List<TagVo> tagVos = tagService.findTagVoListByArticleId(article.getId());
+            articleVo.setTagVos(tagVos);
+        }
+
+        return articleVo;
+    }
+
+    private List<ArticleVo> transferToArticleVoList(List<Article> articles, boolean needCategory, boolean needTag, boolean needContent){
+        List<ArticleVo> articleVos = new ArrayList<>(articles.size());
+        for(Article article:articles) articleVos.add(transferToArticleVo(article, needCategory, needTag, needContent));
+        return articleVos;
     }
 
     @Override
-    public Result getArticleList(PageParamWithCondition pageParamWithCondition) {
+    public List<ArticleVo> getArticleList(PageParamWithCondition pageParamWithCondition) {
         Page<Article> page = new Page<>(pageParamWithCondition.getPageParam().getPage(), pageParamWithCondition.getPageParam().getPageSize());
         IPage<Article> articleIPage = articleMapper.getArticleList(
                 page,
@@ -52,5 +67,6 @@ public class ArticleServiceImpl implements ArticleService {
                 pageParamWithCondition.getMonth());
 
         List<Article> articles = articleIPage.getRecords();
+        return transferToArticleVoList(articles, true, true, true);
     }
 }

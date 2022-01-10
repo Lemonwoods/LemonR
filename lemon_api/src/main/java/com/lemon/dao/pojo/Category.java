@@ -1,9 +1,9 @@
-package com.lemon.vo;
+package com.lemon.dao.pojo;
 
 import lombok.Data;
 
 @Data
-public class CategoryVo {
+public class Category {
     private Long id;
 
     private String avatar;
