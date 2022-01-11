@@ -1,16 +1,20 @@
 package com.lemon.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lemon.dao.dos.LikeArticle;
 import com.lemon.dao.mapper.ArticleMapper;
 import com.lemon.dao.pojo.Article;
 import com.lemon.service.ArticleService;
 import com.lemon.service.CategoryService;
+import com.lemon.service.LikeService;
 import com.lemon.service.TagService;
 import com.lemon.vo.ArticleVo;
 import com.lemon.vo.CategoryVo;
 import com.lemon.vo.Result;
 import com.lemon.vo.TagVo;
+import com.lemon.vo.param.PageParam;
 import com.lemon.vo.param.PageParamWithCondition;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -29,6 +33,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private TagService tagService;
+
+    @Resource
+    private LikeService likeService;
 
     private ArticleVo transferToArticleVo(Article article, boolean needCategory, boolean needTag, boolean needContent){
         ArticleVo articleVo = new ArticleVo();
@@ -49,14 +56,26 @@ public class ArticleServiceImpl implements ArticleService {
         return articleVo;
     }
 
+    private ArticleVo transferToArticleVo(Article article, Long userId, boolean needCategory, boolean needTag, boolean needContent){
+        ArticleVo articleVo = transferToArticleVo(article, needCategory, needTag, needContent);
+        articleVo.setIsLike(likeService.isLike(userId, article.getId()));
+        return articleVo;
+    }
+
     private List<ArticleVo> transferToArticleVoList(List<Article> articles, boolean needCategory, boolean needTag, boolean needContent){
         List<ArticleVo> articleVos = new ArrayList<>(articles.size());
         for(Article article:articles) articleVos.add(transferToArticleVo(article, needCategory, needTag, needContent));
         return articleVos;
     }
 
+    private List<ArticleVo> transferToArticleVoList(List<Article> articles, Long userId, boolean needCategory, boolean needTag, boolean needContent){
+        List<ArticleVo> articleVos = new ArrayList<>(articles.size());
+        for(Article article:articles) articleVos.add(transferToArticleVo(article, userId, needCategory, needTag, needContent));
+        return articleVos;
+    }
+
     @Override
-    public List<ArticleVo> getArticleList(PageParamWithCondition pageParamWithCondition) {
+    public List<ArticleVo> getArticleList(PageParamWithCondition pageParamWithCondition, Long userId) {
         Page<Article> page = new Page<>(pageParamWithCondition.getPageParam().getPage(), pageParamWithCondition.getPageParam().getPageSize());
         IPage<Article> articleIPage = articleMapper.getArticleList(
                 page,
@@ -67,6 +86,19 @@ public class ArticleServiceImpl implements ArticleService {
                 pageParamWithCondition.getMonth());
 
         List<Article> articles = articleIPage.getRecords();
-        return transferToArticleVoList(articles, true, true, true);
+
+        if(userId == null) return transferToArticleVoList(articles, true, true, true);
+        return transferToArticleVoList(articles, userId, true, true, true);
+    }
+
+    @Override
+    public List<ArticleVo> getArticleUserLiked(Long userId, PageParam pageParam) {
+        Page<Article> articlePage = new Page<>(pageParam.getPage(), pageParam.getPageSize());
+        List<Long> likedArticleId = likeService.getLikedArticleIdByUserId(userId);
+        LambdaQueryWrapper<Article> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.in(Article::getId, likedArticleId);
+        IPage<Article> articleIPage = articleMapper.selectPage(articlePage, lambdaQueryWrapper);
+        List<Article> articles = articleIPage.getRecords();
+        return transferToArticleVoList(articles, userId, true, true, true);
     }
 }

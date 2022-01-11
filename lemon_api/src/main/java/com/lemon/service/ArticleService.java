@@ -8,5 +8,7 @@ import com.lemon.vo.param.PageParamWithCondition;
 import java.util.List;
 
 public interface ArticleService {
-    List<ArticleVo> getArticleList(PageParamWithCondition pageParamWithCondition);
+    List<ArticleVo> getArticleList(PageParamWithCondition pageParamWithCondition, Long userId);
+
+    List<ArticleVo> getArticleUserLiked(Long userId, PageParam pageParam);
 }

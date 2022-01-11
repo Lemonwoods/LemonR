@@ -85,7 +85,6 @@ public class LoginServiceImpl implements LoginService {
         user.setPassword(DigestUtils.md5Hex(password+salt));
 
         userService.save(user);
-        user = userService.findUserByAccount(user.getAccount());
 
         String token = JWTUtils.createToken(user.getId());
         redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(user), 1, TimeUnit.DAYS);

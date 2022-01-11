@@ -3,7 +3,7 @@ package com.lemon.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.lemon.dao.mapper.ArticleTagMapper;
 import com.lemon.dao.mapper.TagMapper;
-import com.lemon.dao.pojo.ArticleTag;
+import com.lemon.dao.dos.ArticleTag;
 import com.lemon.dao.pojo.Tag;
 import com.lemon.service.TagService;
 import com.lemon.vo.TagVo;

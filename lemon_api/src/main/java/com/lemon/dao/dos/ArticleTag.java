@@ -1,4 +1,4 @@
-package com.lemon.dao.pojo;
+package com.lemon.dao.dos;
 
 import lombok.Data;
 

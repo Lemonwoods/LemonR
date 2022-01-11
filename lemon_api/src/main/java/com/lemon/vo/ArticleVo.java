@@ -24,6 +24,8 @@ public class ArticleVo {
 
     private Integer likeCount;
 
+    private Boolean isLike = false;
+
     private String content;
 
     private CategoryVo categoryVo;

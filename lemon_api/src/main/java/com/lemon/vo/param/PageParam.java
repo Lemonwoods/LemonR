@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class PageParam {
-    private int pageSize;
-    private int page;
+    private int pageSize = 10;
+    private int page = 1;
 }

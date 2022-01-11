@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result findUserById(Long id, String token) {
+    public UserVo findUserVoById(Long id, String token) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getId, id);
         User user = userMapper.selectOne(queryWrapper);
@@ -65,7 +65,20 @@ public class UserServiceImpl implements UserService {
             deletePrivacy(user);
         }
 
-        return Result.succeed(tranferToUserVo(user));
+        return tranferToUserVo(user);
+    }
+
+    @Override
+    public UserVo findUserVoById(Long id,boolean deletePrivacy) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getId, id);
+        User user = userMapper.selectOne(queryWrapper);
+
+        if(deletePrivacy){
+            deletePrivacy(user);
+        }
+
+        return tranferToUserVo(user);
     }
 
     @Override

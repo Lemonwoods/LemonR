@@ -24,7 +24,7 @@ public class User {
 
     private Integer followCount;
 
-    private Long createCount;
+    private Long createDate;
 
     private String password;
 
@@ -34,7 +34,7 @@ public class User {
 
     private String status;
 
-    private Long last_login;
+    private Long lastLogin;
 
     private Boolean deleted;
 }
