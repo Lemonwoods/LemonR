@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -60,5 +62,19 @@ public class CommentServiceImpl implements CommentService {
         List<Comment> comments = commentIPage.getRecords();
 
         return transferToCommentVoList(comments);
+    }
+
+    @Override
+    public Set<Long> getArticleIdSetByUserId(Long userId) {
+        LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        commentLambdaQueryWrapper.eq(Comment::getFromUid, userId);
+        commentLambdaQueryWrapper.select(Comment::getArticleId);
+        List<Comment> comments = commentMapper.selectList(commentLambdaQueryWrapper);
+        Set<Long> articleIdSet = new HashSet<>();
+        for(Comment comment:comments){
+            Long articleId = comment.getArticleId();
+            articleIdSet.add(articleId);
+        }
+        return articleIdSet;
     }
 }

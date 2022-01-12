@@ -6,14 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lemon.dao.dos.LikeArticle;
 import com.lemon.dao.mapper.ArticleMapper;
 import com.lemon.dao.pojo.Article;
-import com.lemon.service.ArticleService;
-import com.lemon.service.CategoryService;
-import com.lemon.service.LikeService;
-import com.lemon.service.TagService;
-import com.lemon.vo.ArticleVo;
-import com.lemon.vo.CategoryVo;
-import com.lemon.vo.Result;
-import com.lemon.vo.TagVo;
+import com.lemon.service.*;
+import com.lemon.vo.*;
 import com.lemon.vo.param.PageParam;
 import com.lemon.vo.param.PageParamWithCondition;
 import org.springframework.beans.BeanUtils;
@@ -22,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -36,6 +31,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private LikeService likeService;
+
+    @Resource
+    private CommentService commentService;
 
     private ArticleVo transferToArticleVo(Article article, boolean needCategory, boolean needTag, boolean needContent){
         ArticleVo articleVo = new ArticleVo();
@@ -100,5 +98,36 @@ public class ArticleServiceImpl implements ArticleService {
         IPage<Article> articleIPage = articleMapper.selectPage(articlePage, lambdaQueryWrapper);
         List<Article> articles = articleIPage.getRecords();
         return transferToArticleVoList(articles, userId, true, true, true);
+    }
+
+    @Override
+    public List<ArticleVo> getArticleUserPublished(Long userId, PageParam pageParam) {
+        Page<Article> articlePage = new Page<>(pageParam.getPage(), pageParam.getPageSize());
+        LambdaQueryWrapper<Article> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Article::getAuthorId, userId);
+        IPage<Article> articleIPage = articleMapper.selectPage(articlePage, lambdaQueryWrapper);
+        List<Article> articles = articleIPage.getRecords();
+        return transferToArticleVoList(articles, userId, true, true, true);
+    }
+
+    @Override
+    public List<ArticleVo> getArticleUserCommented(Long userId, PageParam pageParam) {
+        Page<Article> articlePage = new Page<>(pageParam.getPage(), pageParam.getPageSize());
+        Set<Long> commentArticleId = commentService.getArticleIdSetByUserId(userId);
+        LambdaQueryWrapper<Article> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.in(Article::getId, commentArticleId);
+        IPage<Article> articleIPage = articleMapper.selectPage(articlePage, lambdaQueryWrapper);
+        List<Article> articles = articleIPage.getRecords();
+        return transferToArticleVoList(articles, userId, true, true, true);
+    }
+
+    @Override
+    public Article findArticleById(Long articleId) {
+        return articleMapper.selectById(articleId);
+    }
+
+    @Override
+    public void removeArticle(Long articleId) {
+        articleMapper.deleteById(articleId);
     }
 }

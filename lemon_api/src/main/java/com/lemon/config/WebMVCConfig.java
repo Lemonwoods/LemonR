@@ -25,7 +25,8 @@ public class WebMVCConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/users/info/change")
                 .addPathPatterns("/users/info/current")
-                .addPathPatterns("/comments/add");
+                .addPathPatterns("/comments/add")
+                .addPathPatterns("/articles/*/remove");
 
     }
 
