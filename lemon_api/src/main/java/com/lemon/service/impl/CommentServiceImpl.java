@@ -10,6 +10,7 @@ import com.lemon.service.CommentService;
 import com.lemon.vo.CommentVo;
 import com.lemon.vo.param.PageParam;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,12 +26,9 @@ public class CommentServiceImpl implements CommentService {
     @Resource
     private CommentMapper commentMapper;
 
+    @Resource
+    @Lazy
     private ArticleService articleService;
-
-    @PostConstruct
-    public void setArticleService(ArticleService articleService) {
-        this.articleService = articleService;
-    }
 
     private List<Comment> getChildrenComment(Comment comment){
         LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();
