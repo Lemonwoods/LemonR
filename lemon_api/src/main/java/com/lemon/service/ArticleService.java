@@ -20,4 +20,14 @@ public interface ArticleService {
     Article findArticleById(Long articleId);
 
     void removeArticle(Long articleId);
+
+    void addArticleLike(Long articleId);
+
+    void removeArticleLike(Long articleId);
+
+    void addViewCount(Long articleId);
+
+    void addCommentCount(Long articleId);
+
+    void removeCommentCount(Long articleId);
 }

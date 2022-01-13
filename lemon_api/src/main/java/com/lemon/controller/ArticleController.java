@@ -66,4 +66,22 @@ public class ArticleController {
         else return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         return Result.succeed(null);
     }
+
+    @PostMapping("{articleId}/like/add")
+    public Result addArticleLike(@PathVariable("articleId")Long articleId){
+        articleService.addArticleLike(articleId);
+        return Result.succeed(null);
+    }
+
+    @PostMapping("{articleId}/like/remove")
+    public Result removeArticleLike(@PathVariable("articleId")Long articleId){
+        articleService.removeArticleLike(articleId);
+        return Result.succeed(null);
+    }
+
+    @PostMapping("{articleId}/viewCount/add")
+    public Result addViewCount(@PathVariable("articleId")Long articleId){
+        articleService.addViewCount(articleId);
+        return Result.succeed(null);
+    }
 }

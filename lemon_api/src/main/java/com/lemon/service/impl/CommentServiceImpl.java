@@ -5,12 +5,15 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lemon.dao.mapper.CommentMapper;
 import com.lemon.dao.pojo.Comment;
+import com.lemon.service.ArticleService;
 import com.lemon.service.CommentService;
 import com.lemon.vo.CommentVo;
 import com.lemon.vo.param.PageParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,6 +24,13 @@ import java.util.Set;
 public class CommentServiceImpl implements CommentService {
     @Resource
     private CommentMapper commentMapper;
+
+    private ArticleService articleService;
+
+    @PostConstruct
+    public void setArticleService(ArticleService articleService) {
+        this.articleService = articleService;
+    }
 
     private List<Comment> getChildrenComment(Comment comment){
         LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -46,9 +56,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void addComment(Comment comment) {
         comment.setCreateDate(System.currentTimeMillis());
         commentMapper.insert(comment);
+        articleService.addCommentCount(comment.getArticleId());
     }
 
     @Override

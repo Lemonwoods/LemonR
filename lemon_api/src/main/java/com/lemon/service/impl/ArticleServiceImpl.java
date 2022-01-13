@@ -1,17 +1,20 @@
 package com.lemon.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lemon.dao.dos.LikeArticle;
 import com.lemon.dao.mapper.ArticleMapper;
 import com.lemon.dao.pojo.Article;
 import com.lemon.service.*;
+import com.lemon.utils.UserThreadLocal;
 import com.lemon.vo.*;
 import com.lemon.vo.param.PageParam;
 import com.lemon.vo.param.PageParamWithCondition;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -72,6 +75,14 @@ public class ArticleServiceImpl implements ArticleService {
         return articleVos;
     }
 
+    private void changeArticleCountField(Long articleId,ArticleCountField field, Integer changeNum){
+        Article article = articleMapper.selectById(articleId);
+        UpdateWrapper<Article> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", articleId);
+        updateWrapper.set(field.getFieldName(), article.getLikeCount()+changeNum);
+        articleMapper.update(null, updateWrapper);
+    }
+
     @Override
     public List<ArticleVo> getArticleList(PageParamWithCondition pageParamWithCondition, Long userId) {
         Page<Article> page = new Page<>(pageParamWithCondition.getPageParam().getPage(), pageParamWithCondition.getPageParam().getPageSize());
@@ -129,5 +140,34 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void removeArticle(Long articleId) {
         articleMapper.deleteById(articleId);
+    }
+
+    @Override
+    @Transactional
+    public void addArticleLike(Long articleId) {
+        changeArticleCountField(articleId, ArticleCountField.LIKE_COUNT, 1);
+        likeService.addUserLikeArticle(UserThreadLocal.get().getId(), articleId);
+    }
+
+    @Override
+    @Transactional
+    public void removeArticleLike(Long articleId) {
+        changeArticleCountField(articleId, ArticleCountField.LIKE_COUNT, -1);
+        likeService.addUserLikeArticle(UserThreadLocal.get().getId(), articleId);
+    }
+
+    @Override
+    public void addViewCount(Long articleId) {
+        changeArticleCountField(articleId, ArticleCountField.VIEW_COUNT, 1);
+    }
+
+    @Override
+    public void addCommentCount(Long articleId) {
+        changeArticleCountField(articleId, ArticleCountField.COMMENT_COUNT, 1);
+    }
+
+    @Override
+    public void removeCommentCount(Long articleId) {
+        changeArticleCountField(articleId, ArticleCountField.COMMENT_COUNT, -1);
     }
 }

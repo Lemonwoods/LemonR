@@ -34,4 +34,14 @@ public class LikeServiceImpl implements LikeService {
         for(LikeArticle likeArticle:likeArticles) likedArticleId.add(likeArticle.getArticleId());
         return likedArticleId;
     }
+
+    @Override
+    public void addUserLikeArticle(Long userId, Long articleId) {
+        LikeArticle likeArticle = new LikeArticle();
+        likeArticle.setArticleId(articleId);
+        likeArticle.setUserId(userId);
+        likeArticle.setCreateDate(System.currentTimeMillis());
+        likeArticleMapper.insert(likeArticle);
+
+    }
 }
