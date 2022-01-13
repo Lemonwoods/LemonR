@@ -55,10 +55,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void addComment(Comment comment) {
+    public CommentVo addComment(Comment comment) {
         comment.setCreateDate(System.currentTimeMillis());
         commentMapper.insert(comment);
         articleService.addCommentCount(comment.getArticleId());
+        return transferToCommentVo(comment);
     }
 
     @Override

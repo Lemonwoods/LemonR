@@ -12,9 +12,9 @@ public class Article {
 
     private String title;
 
-    private String authorId;
+    private Long authorId;
 
-    private String categoryId;
+    private Long categoryId;
 
     private Integer weight;
 

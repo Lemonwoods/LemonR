@@ -20,8 +20,8 @@ public class CommentController {
     @PostMapping("add")
     public Result addComments(@RequestBody Comment comment){
         comment.setFromUid(UserThreadLocal.get().getId());
-        commentService.addComment(comment);
-        return Result.succeed(null);
+        CommentVo commentVo = commentService.addComment(comment);
+        return Result.succeed(commentVo);
     }
 
     @PostMapping("articles/{articleId}")

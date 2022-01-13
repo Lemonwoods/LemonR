@@ -10,6 +10,7 @@ import com.lemon.vo.ErrorCode;
 import com.lemon.vo.Result;
 import com.lemon.vo.param.PageParam;
 import com.lemon.vo.param.PageParamWithCondition;
+import com.lemon.vo.param.PublishArticleParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -83,5 +84,11 @@ public class ArticleController {
     public Result addViewCount(@PathVariable("articleId")Long articleId){
         articleService.addViewCount(articleId);
         return Result.succeed(null);
+    }
+
+    @PostMapping("publish")
+    public Result publish(@RequestBody PublishArticleParam publishArticleParam){
+        ArticleVo articleVo = articleService.publish(publishArticleParam);
+        return Result.succeed(articleVo);
     }
 }

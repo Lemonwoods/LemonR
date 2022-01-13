@@ -5,6 +5,7 @@ import com.lemon.vo.ArticleVo;
 import com.lemon.vo.Result;
 import com.lemon.vo.param.PageParam;
 import com.lemon.vo.param.PageParamWithCondition;
+import com.lemon.vo.param.PublishArticleParam;
 
 import java.util.List;
 
@@ -30,4 +31,6 @@ public interface ArticleService {
     void addCommentCount(Long articleId);
 
     void removeCommentCount(Long articleId);
+
+    ArticleVo publish(PublishArticleParam publishArticleParam);
 }

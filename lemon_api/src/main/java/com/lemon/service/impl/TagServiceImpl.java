@@ -48,4 +48,15 @@ public class TagServiceImpl implements TagService {
 
         return transferToTagVoList(tags);
     }
+
+    @Override
+    public void addArticleTagRelation(List<Long> tagIdList, Long articleId) {
+        ArticleTag articleTag = new ArticleTag();
+        articleTag.setArticleId(articleId);
+        for(Long tagId:tagIdList){
+            articleTag.setId(null);
+            articleTag.setTagId(tagId);
+            articleTagMapper.insert(articleTag);
+        }
+    }
 }

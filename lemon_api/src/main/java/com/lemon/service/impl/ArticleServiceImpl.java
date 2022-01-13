@@ -12,6 +12,7 @@ import com.lemon.utils.UserThreadLocal;
 import com.lemon.vo.*;
 import com.lemon.vo.param.PageParam;
 import com.lemon.vo.param.PageParamWithCondition;
+import com.lemon.vo.param.PublishArticleParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,6 +82,16 @@ public class ArticleServiceImpl implements ArticleService {
         updateWrapper.eq("id", articleId);
         updateWrapper.set(field.getFieldName(), article.getLikeCount()+changeNum);
         articleMapper.update(null, updateWrapper);
+    }
+
+    private Article generateInitialArticle(){
+        Article article = new Article();
+        article.setCreate_date(System.currentTimeMillis());
+        article.setLikeCount(0);
+        article.setViewCount(0);
+        article.setCommentCount(0);
+        article.setWeight(0);
+        return article;
     }
 
     @Override
@@ -169,5 +180,15 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void removeCommentCount(Long articleId) {
         changeArticleCountField(articleId, ArticleCountField.COMMENT_COUNT, -1);
+    }
+
+    @Override
+    @Transactional
+    public ArticleVo publish(PublishArticleParam publishArticleParam) {
+        Article articleResult = generateInitialArticle();
+        BeanUtils.copyProperties(publishArticleParam, articleResult);
+        articleMapper.insert(articleResult);
+        tagService.addArticleTagRelation(publishArticleParam.getTagIdList(), articleResult.getId());
+        return transferToArticleVo(articleResult, true, true, true);
     }
 }

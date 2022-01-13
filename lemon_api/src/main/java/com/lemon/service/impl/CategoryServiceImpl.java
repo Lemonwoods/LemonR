@@ -21,7 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryVo findCategoryVoById(String categoryId) {
+    public CategoryVo findCategoryVoById(Long categoryId) {
         Category category = categoryMapper.selectById(categoryId);
         return transferToCategoryVo(category);
     }
