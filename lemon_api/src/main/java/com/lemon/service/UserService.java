@@ -16,4 +16,11 @@ public interface UserService {
     UserVo findUserVoById(Long id,boolean deletePrivacy);
 
     void updateUserInfo(User user);
+
+    User generateInitialUser();
+
+    void followUser(Long userId);
+
+    void cancelFollowUser(Long userId);
+
 }

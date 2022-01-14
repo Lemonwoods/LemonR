@@ -1,6 +1,7 @@
 package com.lemon.controller;
 
 import com.lemon.dao.pojo.User;
+import com.lemon.service.FollowService;
 import com.lemon.service.UserService;
 import com.lemon.utils.UserThreadLocal;
 import com.lemon.vo.Result;
@@ -13,6 +14,9 @@ import javax.annotation.Resource;
 public class UserController {
     @Resource
     private UserService userService;
+
+    @Resource
+    private FollowService followService;
 
     @PostMapping("info/{id}")
     public Result getUserInfo(@RequestHeader(value = "Authorization", defaultValue = "")String token,
@@ -29,6 +33,18 @@ public class UserController {
     public Result changeUserInfo(@RequestBody User user){
         user.setId(UserThreadLocal.get().getId());
         userService.updateUserInfo(user);
+        return Result.succeed(null);
+    }
+
+    @PostMapping("follow/{userId}")
+    public Result followUser(@PathVariable("userId")Long userId){
+        userService.followUser(userId);
+        return Result.succeed(null);
+    }
+
+    @PostMapping("cancelFollow/{userId}")
+    public Result cancelFollowUser(@PathVariable("userId")Long userId){
+        userService.cancelFollowUser(userId);
         return Result.succeed(null);
     }
 }

@@ -16,7 +16,8 @@ public class WebMVCConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://localhost:8080");
+        registry.addMapping("/**")
+                .allowedOrigins("*");
     }
 
     // 拦截用户请求,判断是否登陆,如果没有登陆, 将会阻止访问
@@ -29,7 +30,9 @@ public class WebMVCConfig implements WebMvcConfigurer {
                 .addPathPatterns("/articles/*/remove")
                 .addPathPatterns("/articles/*/like/*")
                 .addPathPatterns("/articles/*/viewCount/add")
-                .addPathPatterns("/articles/publish");
+                .addPathPatterns("/articles/publish")
+                .addPathPatterns("/users/follow/*")
+                .addPathPatterns("/users/cancelFollow/*");
 
     }
 

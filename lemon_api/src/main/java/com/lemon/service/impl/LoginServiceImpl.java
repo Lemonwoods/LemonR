@@ -79,7 +79,7 @@ public class LoginServiceImpl implements LoginService {
             return Result.fail(ErrorCode.ACCOUNT_EXIST.getCode(), ErrorCode.ACCOUNT_EXIST.getMsg());
         }
 
-        user = new User();
+        user = userService.generateInitialUser();
         user.setAccount(account);
         user.setNickname(nickname);
         user.setPassword(DigestUtils.md5Hex(password+salt));

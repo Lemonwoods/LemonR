@@ -13,6 +13,7 @@ import com.lemon.vo.*;
 import com.lemon.vo.param.PageParam;
 import com.lemon.vo.param.PageParamWithCondition;
 import com.lemon.vo.param.PublishArticleParam;
+import javafx.scene.shape.Arc;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,8 +81,16 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = articleMapper.selectById(articleId);
         UpdateWrapper<Article> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", articleId);
-        updateWrapper.set(field.getFieldName(), article.getLikeCount()+changeNum);
+        updateWrapper.set(field.getFieldName(), getFieldCountValue(article, field)+changeNum);
         articleMapper.update(null, updateWrapper);
+    }
+
+    private int getFieldCountValue(Article article, ArticleCountField articleCountField){
+        if(articleCountField.getFieldName().equals("like_count")) return article.getLikeCount();
+        if(articleCountField.getFieldName().equals("view_count")) return article.getViewCount();
+        if(articleCountField.getFieldName().equals("comment_count")) return article.getCommentCount();
+        //todo 改进
+        return 0;
     }
 
     private Article generateInitialArticle(){
