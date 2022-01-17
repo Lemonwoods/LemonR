@@ -19,8 +19,8 @@ public class FollowServiceImpl implements FollowService {
     @Transactional
     public void followUser(Long userId) {
         Follow follow = new Follow();
-        follow.setFromUid(UserThreadLocal.get().getId());
-        follow.setToUid(userId);
+        follow.setFromUserId(UserThreadLocal.get().getId());
+        follow.setToUserId(userId);
         follow.setCreateDate(System.currentTimeMillis());
         followMapper.insert(follow);
     }
