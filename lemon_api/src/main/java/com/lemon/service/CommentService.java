@@ -13,4 +13,6 @@ public interface CommentService {
     List<CommentVo> getArticleCommentVo(Long articleId, PageParam pageParam);
 
     Set<Long> getArticleIdSetByUserId(Long userId);
+
+    void removeComment(Long commentId);
 }

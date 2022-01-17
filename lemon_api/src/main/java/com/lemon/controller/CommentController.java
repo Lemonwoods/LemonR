@@ -24,6 +24,12 @@ public class CommentController {
         return Result.succeed(commentVo);
     }
 
+    @PostMapping("{commentId}/remove")
+    public Result removeComments(@PathVariable("commentId")Long commentId){
+        commentService.removeComment(commentId);
+        return Result.succeed(null);
+    }
+
     @PostMapping("articles/{articleId}")
     public Result getArticleComments(@PathVariable("articleId")Long articleId,
                                      @RequestBody PageParam pageParam){

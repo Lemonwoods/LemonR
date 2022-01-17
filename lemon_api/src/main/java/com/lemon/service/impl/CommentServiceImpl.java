@@ -1,5 +1,6 @@
 package com.lemon.service.impl;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -87,5 +88,14 @@ public class CommentServiceImpl implements CommentService {
             articleIdSet.add(articleId);
         }
         return articleIdSet;
+    }
+
+    @Override
+    @Transactional
+    public void removeComment(Long commentId) {
+        Comment comment = commentMapper.selectById(commentId);
+        commentMapper.deleteById(commentId);
+
+        articleService.removeCommentCount(comment.getArticleId());
     }
 }
