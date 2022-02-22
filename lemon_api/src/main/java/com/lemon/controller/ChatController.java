@@ -2,6 +2,7 @@ package com.lemon.controller;
 
 import com.lemon.service.ChatService;
 import com.lemon.utils.UserThreadLocal;
+import com.lemon.vo.ContactVo;
 import com.lemon.vo.MessageVo;
 import com.lemon.vo.Result;
 import com.lemon.vo.param.PageParam;
@@ -25,7 +26,13 @@ public class ChatController {
     @PostMapping("records/fromUser/{fromUserId}")
     public Result getMessageRecord(@PathVariable("fromUserId")Long fromUserId,
                                    @RequestBody PageParam pageParam){
-        List<MessageVo> messageVoList = chatService.getMessageRecord(fromUserId, pageParam);
+        List<MessageVo> messageVoList = chatService.getMessageVos(fromUserId, pageParam);
         return Result.succeed(messageVoList);
+    }
+
+    @GetMapping("contacts")
+    public Result getContacts(){
+        List<ContactVo> contactVos = chatService.getContacts();
+        return Result.succeed(contactVos);
     }
 }

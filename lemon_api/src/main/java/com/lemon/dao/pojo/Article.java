@@ -6,7 +6,7 @@ import lombok.Data;
 public class Article {
     private Long id;
 
-    private Long create_date;
+    private Long createDate;
 
     private String summary;
 

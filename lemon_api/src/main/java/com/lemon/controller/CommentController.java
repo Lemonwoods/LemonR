@@ -20,6 +20,7 @@ public class CommentController {
     @PostMapping("add")
     public Result addComments(@RequestBody Comment comment){
         comment.setFromUid(UserThreadLocal.get().getId());
+        comment.setCreateDate(System.currentTimeMillis());
         CommentVo commentVo = commentService.addComment(comment);
         return Result.succeed(commentVo);
     }

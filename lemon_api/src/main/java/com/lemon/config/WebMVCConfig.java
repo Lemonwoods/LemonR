@@ -29,7 +29,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
                 .addPathPatterns("/comments/add")
                 .addPathPatterns("/articles/*/remove")
                 .addPathPatterns("/articles/*/like/*")
-                .addPathPatterns("/articles/*/viewCount/add")
+                //.addPathPatterns("/articles/*/viewCount/add")
                 .addPathPatterns("/articles/publish")
                 .addPathPatterns("/users/follow/*")
                 .addPathPatterns("/users/cancelFollow/*")

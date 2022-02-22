@@ -14,5 +14,5 @@ public class Message {
 
     private Long createDate;
 
-    private boolean read;
+    private boolean hasRead;
 }

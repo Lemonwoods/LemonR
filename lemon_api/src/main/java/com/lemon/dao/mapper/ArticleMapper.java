@@ -12,4 +12,6 @@ public interface ArticleMapper extends BaseMapper<Article> {
                                   Long authorId,
                                   String year,
                                   String month);
+
+    Integer getArticleTotalCount(Long tagId, Long categoryId, Long authorId, String year, String month);
 }

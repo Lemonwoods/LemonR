@@ -3,11 +3,13 @@ package com.lemon.controller;
 import com.lemon.dao.pojo.Article;
 import com.lemon.dao.pojo.User;
 import com.lemon.service.ArticleService;
+import com.lemon.service.LikeService;
 import com.lemon.service.TokenService;
 import com.lemon.utils.UserThreadLocal;
 import com.lemon.vo.ArticleVo;
 import com.lemon.vo.ErrorCode;
 import com.lemon.vo.Result;
+import com.lemon.vo.param.ArticleQueryCondition;
 import com.lemon.vo.param.PageParam;
 import com.lemon.vo.param.PageParamWithCondition;
 import com.lemon.vo.param.PublishArticleParam;
@@ -25,18 +27,30 @@ public class ArticleController {
     @Resource
     private TokenService tokenService;
 
-    @PostMapping
-    public Result getArticleList(@RequestHeader(value = "Authorization", defaultValue = "") String token,
-                                 @RequestBody PageParamWithCondition pageParamWithCondition){
-        Long userId;
-        if(!token.equals("")){
-            userId = null;
-        }else{
-            User user = tokenService.checkToken(token);
-            userId = user.getId();
-        }
+    @Resource
+    private LikeService likeService;
 
-        return Result.succeed(articleService.getArticleList(pageParamWithCondition, userId));
+    @PostMapping
+    public Result getArticleList(@RequestBody PageParamWithCondition pageParamWithCondition){
+        return Result.succeed(articleService.getArticleList(pageParamWithCondition));
+    }
+
+    @PostMapping("totalCount")
+    public Result getArticleTotalCount(@RequestBody ArticleQueryCondition articleQueryCondition){
+        Integer res = articleService.getArticleTotalCount(articleQueryCondition);
+        return Result.succeed(res);
+    }
+
+    @GetMapping("{articleId}")
+    public Result getArticleById(@PathVariable("articleId")Long articleId){
+        ArticleVo articleVo = articleService.getArticleVoById(articleId);
+        return Result.succeed(articleVo);
+    }
+
+    @PostMapping("{articleId}/isLiked")
+    public Result getIsLikedArticle(@PathVariable("articleId")Long articleId,
+                                    @RequestHeader(value = "Authorization", defaultValue = "")String token){
+        return Result.succeed(likeService.isLikedArticle(articleId, token));
     }
 
     @PostMapping("users/{userId}/liked")

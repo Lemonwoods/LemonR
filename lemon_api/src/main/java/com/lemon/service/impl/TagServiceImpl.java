@@ -59,4 +59,10 @@ public class TagServiceImpl implements TagService {
             articleTagMapper.insert(articleTag);
         }
     }
+
+    @Override
+    public List<TagVo> getTagVos() {
+        List<Tag> tags = tagMapper.selectList(null);
+        return transferToTagVoList(tags);
+    }
 }

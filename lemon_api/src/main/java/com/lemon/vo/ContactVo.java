@@ -4,20 +4,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class CommentVo {
+public class ContactVo {
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long id;
+    private Long userId;
 
-    private Long fromUid;
+    private String avatar;
 
-    private Long toUid;
+    private String nickName;
 
-    private String content;
-
-    private Long createDate;
-
-    private List<CommentVo> children;
+    private MessageVo lastMessage;
 }

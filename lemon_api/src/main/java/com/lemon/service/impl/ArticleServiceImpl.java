@@ -4,16 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lemon.dao.dos.LikeArticle;
 import com.lemon.dao.mapper.ArticleMapper;
 import com.lemon.dao.pojo.Article;
+import com.lemon.dao.pojo.User;
 import com.lemon.service.*;
 import com.lemon.utils.UserThreadLocal;
 import com.lemon.vo.*;
+import com.lemon.vo.param.ArticleQueryCondition;
 import com.lemon.vo.param.PageParam;
 import com.lemon.vo.param.PageParamWithCondition;
 import com.lemon.vo.param.PublishArticleParam;
-import javafx.scene.shape.Arc;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,9 +40,21 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     private CommentService commentService;
 
+    @Resource
+    private UserService userService;
+
+    @Resource
+    private TokenService tokenService;
+
     private ArticleVo transferToArticleVo(Article article, boolean needCategory, boolean needTag, boolean needContent){
         ArticleVo articleVo = new ArticleVo();
         BeanUtils.copyProperties(article, articleVo);
+
+        articleVo.setContent(article.getContentHtml());
+
+        UserVo userVo = userService.findUserVoById(article.getAuthorId(),false);
+
+        articleVo.setAuthorNickName(userVo.getNickname());
 
         if(!needContent) articleVo.setContent(null);
 
@@ -61,7 +73,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     private ArticleVo transferToArticleVo(Article article, Long userId, boolean needCategory, boolean needTag, boolean needContent){
         ArticleVo articleVo = transferToArticleVo(article, needCategory, needTag, needContent);
-        articleVo.setIsLike(likeService.isLike(userId, article.getId()));
         return articleVo;
     }
 
@@ -95,7 +106,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     private Article generateInitialArticle(){
         Article article = new Article();
-        article.setCreate_date(System.currentTimeMillis());
+        article.setCreateDate(System.currentTimeMillis());
         article.setLikeCount(0);
         article.setViewCount(0);
         article.setCommentCount(0);
@@ -104,26 +115,34 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleVo> getArticleList(PageParamWithCondition pageParamWithCondition, Long userId) {
+    public List<ArticleVo> getArticleList(PageParamWithCondition pageParamWithCondition) {
         Page<Article> page = new Page<>(pageParamWithCondition.getPageParam().getPage(), pageParamWithCondition.getPageParam().getPageSize());
         IPage<Article> articleIPage = articleMapper.getArticleList(
                 page,
-                pageParamWithCondition.getTagId(),
-                pageParamWithCondition.getCategoryId(),
-                pageParamWithCondition.getAuthorId(),
-                pageParamWithCondition.getYear(),
+                pageParamWithCondition.getArticleQueryCondition().getTagId(),
+                pageParamWithCondition.getArticleQueryCondition().getCategoryId(),
+                pageParamWithCondition.getArticleQueryCondition().getAuthorId(),
+                pageParamWithCondition.getArticleQueryCondition().getYear(),
                 pageParamWithCondition.getMonth());
 
         List<Article> articles = articleIPage.getRecords();
 
-        if(userId == null) return transferToArticleVoList(articles, true, true, true);
-        return transferToArticleVoList(articles, userId, true, true, true);
+        return transferToArticleVoList(articles, true, true, true);
+    }
+
+    @Override
+    public ArticleVo getArticleVoById(Long articleId) {
+        Article article = articleMapper.selectById(articleId);
+        return transferToArticleVo(article, true, true, true);
     }
 
     @Override
     public List<ArticleVo> getArticleUserLiked(Long userId, PageParam pageParam) {
         Page<Article> articlePage = new Page<>(pageParam.getPage(), pageParam.getPageSize());
         List<Long> likedArticleId = likeService.getLikedArticleIdByUserId(userId);
+
+        if(likedArticleId.size()==0) return new ArrayList<>();
+
         LambdaQueryWrapper<Article> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.in(Article::getId, likedArticleId);
         IPage<Article> articleIPage = articleMapper.selectPage(articlePage, lambdaQueryWrapper);
@@ -145,6 +164,9 @@ public class ArticleServiceImpl implements ArticleService {
     public List<ArticleVo> getArticleUserCommented(Long userId, PageParam pageParam) {
         Page<Article> articlePage = new Page<>(pageParam.getPage(), pageParam.getPageSize());
         Set<Long> commentArticleId = commentService.getArticleIdSetByUserId(userId);
+
+        if(commentArticleId.size()==0) return new ArrayList<>();
+
         LambdaQueryWrapper<Article> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.in(Article::getId, commentArticleId);
         IPage<Article> articleIPage = articleMapper.selectPage(articlePage, lambdaQueryWrapper);
@@ -196,8 +218,22 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleVo publish(PublishArticleParam publishArticleParam) {
         Article articleResult = generateInitialArticle();
         BeanUtils.copyProperties(publishArticleParam, articleResult);
+        articleResult.setAuthorId(UserThreadLocal.get().getId());
+
         articleMapper.insert(articleResult);
         tagService.addArticleTagRelation(publishArticleParam.getTagIdList(), articleResult.getId());
         return transferToArticleVo(articleResult, true, true, true);
+    }
+
+    @Override
+    public Integer getArticleTotalCount(ArticleQueryCondition articleQueryCondition) {
+        Integer res = articleMapper.getArticleTotalCount(
+                articleQueryCondition.getTagId(),
+                articleQueryCondition.getCategoryId(),
+                articleQueryCondition.getAuthorId(),
+                articleQueryCondition.getYear(),
+                articleQueryCondition.getMonth());
+
+        return res;
     }
 }

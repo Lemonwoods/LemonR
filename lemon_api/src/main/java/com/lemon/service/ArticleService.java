@@ -3,6 +3,7 @@ package com.lemon.service;
 import com.lemon.dao.pojo.Article;
 import com.lemon.vo.ArticleVo;
 import com.lemon.vo.Result;
+import com.lemon.vo.param.ArticleQueryCondition;
 import com.lemon.vo.param.PageParam;
 import com.lemon.vo.param.PageParamWithCondition;
 import com.lemon.vo.param.PublishArticleParam;
@@ -10,7 +11,7 @@ import com.lemon.vo.param.PublishArticleParam;
 import java.util.List;
 
 public interface ArticleService {
-    List<ArticleVo> getArticleList(PageParamWithCondition pageParamWithCondition, Long userId);
+    List<ArticleVo> getArticleList(PageParamWithCondition pageParamWithCondition);
 
     List<ArticleVo> getArticleUserLiked(Long userId, PageParam pageParam);
 
@@ -33,4 +34,8 @@ public interface ArticleService {
     void removeCommentCount(Long articleId);
 
     ArticleVo publish(PublishArticleParam publishArticleParam);
+
+    Integer getArticleTotalCount(ArticleQueryCondition articleQueryCondition);
+
+    ArticleVo getArticleVoById(Long articleId);
 }

@@ -1,6 +1,7 @@
 package com.lemon.service;
 
 import com.lemon.dao.pojo.Message;
+import com.lemon.vo.ContactVo;
 import com.lemon.vo.MessageVo;
 import com.lemon.vo.param.PageParam;
 
@@ -11,9 +12,11 @@ public interface ChatService {
 
     void savaMessage(Message messageRecord);
 
-    List<Message> getUnreadMessage(Long userId);
+    List<MessageVo> getMessageVos(Long userId, PageParam pageParam);
 
     void hasReadFromUser(Long fromUserId, Long toUserId);
 
     List<MessageVo> getMessageRecord(Long fromUserId, PageParam pageParam);
+
+    List<ContactVo> getContacts();
 }

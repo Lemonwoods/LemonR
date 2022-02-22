@@ -16,13 +16,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.lemon.dao.pojo.Message;
 import com.lemon.service.ChatService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 @ServerEndpoint("/chat/websocket/{userId}")
-@Component
+@Service
 public class WebSocketServer {
-    @Resource
-    private ChatService chatService;
+    private static ChatService chatService;
 
     private static int onlineCount = 0;
 
@@ -31,6 +32,11 @@ public class WebSocketServer {
     private Session session;
 
     private Long userId;
+
+    @Autowired
+    public void setChatService(ChatService chatService){
+        WebSocketServer.chatService = chatService;
+    }
 
     //成功建立连接时调用
     @OnOpen
@@ -46,11 +52,11 @@ public class WebSocketServer {
             addOnlineCount();
         }
 
-        // 获取未读消息列表
-        List<Message> messageList = chatService.getUnreadMessage(this.userId);
-        for(Message message:messageList){
-            sendMessage(message);
-        }
+//        // 获取未读消息列表
+//        List<Message> messageList = chatService.getUnreadMessage(this.userId);
+//        for(Message message:messageList){
+//            sendMessage(message);
+//        }
 
         try {
             sendMessage("连接成功");
@@ -79,7 +85,7 @@ public class WebSocketServer {
                 JSONObject jsonObject = JSON.parseObject(message);
                 Long toUserId=jsonObject.getLong("toUserId");
                 String content = jsonObject.getString("content");
-                Long createDate = jsonObject.getLong("createDAte");
+                Long createDate = jsonObject.getLong("createDate");
 
                 Message messageRecord = chatService.getEmptyMessage();
                 messageRecord.setFromUserId(userId);

@@ -6,17 +6,12 @@ import lombok.Data;
 public class PageParamWithCondition {
     private PageParam pageParam;
 
-    private Long categoryId;
-    private Long tagId;
-    private Long authorId;
-
-    private String year;
-    private String month;
+    private ArticleQueryCondition articleQueryCondition;
 
     public String getMonth(){
-        if(month!=null&&month.length()==1){
-            return "0"+month;
+        if(articleQueryCondition.getMonth()!=null&& articleQueryCondition.getMonth().length()==1){
+            return "0"+articleQueryCondition.getMonth();
         }
-        return month;
+        return articleQueryCondition.getMonth();
     }
 }

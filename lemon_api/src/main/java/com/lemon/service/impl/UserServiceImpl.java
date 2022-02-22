@@ -82,9 +82,12 @@ public class UserServiceImpl implements UserService {
         queryWrapper.eq(User::getId, id);
         User user = userMapper.selectOne(queryWrapper);
 
-        User userToken = tokenService.checkToken(token);
-
-        if(userToken==null||!userToken.getId().equals(id)){
+        try{
+            User userToken = tokenService.checkToken(token);
+            if(userToken==null||!userToken.getId().equals(id)){
+                deletePrivacy(user);
+            }
+        }catch (Exception e){
             deletePrivacy(user);
         }
 

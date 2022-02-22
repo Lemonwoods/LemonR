@@ -1,20 +1,27 @@
 package com.lemon.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.sun.xml.internal.ws.developer.Serialization;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class ArticleVo {
+
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
-    private Long create_date;
+    private Long createDate;
 
     private String summary;
 
     private String title;
 
-    private String authorId;
+    private Long authorId;
+
+    private String authorNickName;
 
     private Integer weight;
 
@@ -23,8 +30,6 @@ public class ArticleVo {
     private Integer commentCount;
 
     private Integer likeCount;
-
-    private Boolean isLike = false;
 
     private String content;
 

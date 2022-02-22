@@ -5,9 +5,11 @@ import com.lemon.service.FollowService;
 import com.lemon.service.UserService;
 import com.lemon.utils.UserThreadLocal;
 import com.lemon.vo.Result;
+import com.lemon.vo.param.PageParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("users")
@@ -46,5 +48,19 @@ public class UserController {
     public Result cancelFollowUser(@PathVariable("userId")Long userId){
         userService.cancelFollowUser(userId);
         return Result.succeed(null);
+    }
+
+    @PostMapping("{id}/followList")
+    public Result getFollowList(@PathVariable("id")Long userId,
+                                @RequestBody PageParam pageParam){
+        List<Long> userIdList = followService.getFollowUserIdList(userId, pageParam);
+        return Result.succeed(userIdList);
+    }
+
+    @PostMapping("{id}/fanList")
+    public Result getFanList(@PathVariable("id")Long userId,
+                                @RequestBody PageParam pageParam){
+        List<Long> userIdList = followService.getFanUserIdList(userId, pageParam);
+        return Result.succeed(userIdList);
     }
 }
