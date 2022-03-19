@@ -15,9 +15,10 @@
                 and id in (select article_id from le_article_tag where tag_id = #{tagId})
             </if>
 
-            <if test="year != null and year.length>0 and month != null and month.length>0">
+            <if test="year != null and year.length>0 and month != null and month.length>0 and day != null and day.length>0">
                 and ( FROM_UNIXTIME(create_date/1000, '%Y') = #{year}
-                and   FROM_UNIXTIME(create_date/1000, '%m') = #{month})
+                and   FROM_UNIXTIME(create_date/1000, '%m') = #{month}
+                and   FROM_UNIXTIME(create_date/1000, '%d') = #{day})
             </if>
         </where>
         order by weight, create_date desc

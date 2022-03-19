@@ -38,4 +38,6 @@ public interface ArticleService {
     Integer getArticleTotalCount(ArticleQueryCondition articleQueryCondition);
 
     ArticleVo getArticleVoById(Long articleId);
+
+    List<ArticleVo> searchArticle(String regex, PageParam pageParam);
 }

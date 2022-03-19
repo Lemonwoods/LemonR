@@ -10,4 +10,5 @@ public class ArticleQueryCondition {
 
     private String year;
     private String month;
+    private String day;
 }

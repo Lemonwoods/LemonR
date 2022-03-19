@@ -43,9 +43,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     private UserService userService;
 
-    @Resource
-    private TokenService tokenService;
-
     private ArticleVo transferToArticleVo(Article article, boolean needCategory, boolean needTag, boolean needContent){
         ArticleVo articleVo = new ArticleVo();
         BeanUtils.copyProperties(article, articleVo);
@@ -123,7 +120,8 @@ public class ArticleServiceImpl implements ArticleService {
                 pageParamWithCondition.getArticleQueryCondition().getCategoryId(),
                 pageParamWithCondition.getArticleQueryCondition().getAuthorId(),
                 pageParamWithCondition.getArticleQueryCondition().getYear(),
-                pageParamWithCondition.getMonth());
+                pageParamWithCondition.getArticleQueryCondition().getMonth(),
+                pageParamWithCondition.getArticleQueryCondition().getDay());
 
         List<Article> articles = articleIPage.getRecords();
 
@@ -235,5 +233,10 @@ public class ArticleServiceImpl implements ArticleService {
                 articleQueryCondition.getMonth());
 
         return res;
+    }
+
+    @Override
+    public List<ArticleVo> searchArticle(String regex, PageParam pageParam) {
+        return null;
     }
 }
