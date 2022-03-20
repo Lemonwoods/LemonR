@@ -8,6 +8,7 @@ import com.lemon.dao.mapper.CommentMapper;
 import com.lemon.dao.pojo.Comment;
 import com.lemon.service.ArticleService;
 import com.lemon.service.CommentService;
+import com.lemon.utils.FuzzyCacheEvict;
 import com.lemon.vo.CommentVo;
 import com.lemon.vo.param.PageParam;
 import org.springframework.beans.BeanUtils;
@@ -57,6 +58,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @FuzzyCacheEvict(value = "commentVos", key = "'articleId_'+#comment.articleId")
     public CommentVo addComment(Comment comment) {
         comment.setCreateDate(System.currentTimeMillis());
         commentMapper.insert(comment);
@@ -65,7 +67,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Cacheable(value="commentVo", key="'articleId_'+#articleId+'_page_'+#pageParam.page")
+    @Cacheable(value="commentVos", key="'articleId_'+#articleId+'_page_'+#pageParam.page")
     public List<CommentVo> getArticleCommentVo(Long articleId, PageParam pageParam) {
         Page<Comment> commentPage = new Page<>(pageParam.getPage(), pageParam.getPageSize());
         LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();

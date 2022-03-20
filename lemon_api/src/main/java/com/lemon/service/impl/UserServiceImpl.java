@@ -12,6 +12,8 @@ import com.lemon.vo.Result;
 import com.lemon.vo.UserCountField;
 import com.lemon.vo.UserVo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,6 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "userVos", key = "'id_'+#id")
     public UserVo findUserVoById(Long id, String token) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getId, id);
@@ -95,6 +98,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "userVos", key = "'id_'+#id")
     public UserVo findUserVoById(Long id,boolean deletePrivacy) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getId, id);
@@ -108,6 +112,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "userVos", key = "'id_'+#user.id")
     public void updateUserInfo(User user) {
         userMapper.updateById(user);
     }
