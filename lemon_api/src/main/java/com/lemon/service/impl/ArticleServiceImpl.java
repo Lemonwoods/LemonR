@@ -15,6 +15,8 @@ import com.lemon.vo.param.PageParam;
 import com.lemon.vo.param.PageParamWithCondition;
 import com.lemon.vo.param.PublishArticleParam;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -129,6 +131,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Cacheable(value="articleVos", key = "'aritcleId_'+#articleId")
     public ArticleVo getArticleVoById(Long articleId) {
         Article article = articleMapper.selectById(articleId);
         return transferToArticleVo(article, true, true, true);
@@ -178,6 +181,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @CacheEvict(value="articleVos", key = "'aritcleId_'+#articleId")
     public void removeArticle(Long articleId) {
         articleMapper.deleteById(articleId);
     }

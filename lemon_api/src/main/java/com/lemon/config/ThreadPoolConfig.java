@@ -14,11 +14,12 @@ public class ThreadPoolConfig {
     @Bean("taskExecutor")
     public Executor asyncServiceExecutor(){
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(5);
+        executor.setCorePoolSize(10);
         executor.setQueueCapacity(Integer.MAX_VALUE);
         executor.setKeepAliveSeconds(60);
-        executor.setThreadNamePrefix("lemon blog");
+        executor.setThreadNamePrefix("lemonr");
         executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setMaxPoolSize(50);
         executor.initialize();
         return executor;
     }

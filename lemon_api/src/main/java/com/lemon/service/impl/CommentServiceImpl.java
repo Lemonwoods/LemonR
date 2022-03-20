@@ -11,6 +11,7 @@ import com.lemon.service.CommentService;
 import com.lemon.vo.CommentVo;
 import com.lemon.vo.param.PageParam;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,6 +65,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Cacheable(value="commentVo", key="'articleId_'+#articleId+'_page_'+#pageParam.page")
     public List<CommentVo> getArticleCommentVo(Long articleId, PageParam pageParam) {
         Page<Comment> commentPage = new Page<>(pageParam.getPage(), pageParam.getPageSize());
         LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();
